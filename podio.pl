@@ -1,8 +1,7 @@
 use strict;
 use warnings;
 
-my @songs;
-my($folder, $file, $random, $loop);
+my(@songs, $folder, $file, $random, $loop);
 
 while (<>) {
 	if (/^!/) {
@@ -25,5 +24,11 @@ while (<>) {
 }
 
 for (my $i = 0 ; $i < scalar(@songs) ; $i++) {
-	system("afplay", $songs[$i]);
+	if (-e $songs[$i]) {
+		exec("afplay", $songs[$i]);
+	}
+	else {
+		print STDERR "file not found : $songs[$i]\n";
+		delete $songs[$i];
+	}
 }

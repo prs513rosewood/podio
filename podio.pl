@@ -1,8 +1,8 @@
 use strict;
 use warnings;
+use List::Util 'shuffle';
 
 my @songs = ();
-my @list = ();
 my $folder = "";
 my $file = "";
 my $random = 0;
@@ -25,25 +25,16 @@ while (<>) {
 
 	elsif  (/^>(.*?)\s*$/) {
 		$file = $1;
-		push(@list, $folder."/".$file);
+		push(@songs, $folder."/".$file);
 	}
 }
 
-my $n = @list;
-
-foreach $i (0 .. $n - 1)  {
-	my $randI = int (rand ($n - $i));
-	push(@songs, $list[$randI]);
-	$list[$randI] = $list[0];
-	shift @list;
-}
-
-foreach $i (0 .. $n - 1) {
+@songs = shuffle (@songs);
+foreach $i (0 .. $#songs) {
 	if (-e $songs[$i]) {
 		system("afplay", $songs[$i]);
 	}
 	else {
 		print STDERR "file not found : $songs[$i]\n";
-		delete $songs[$i];
 	}
 }

@@ -1,7 +1,13 @@
 use strict;
 use warnings;
 
-my(@songs, $folder, $file, $random, $loop);
+my @songs = ();
+my @list = ();
+my $folder = "";
+my $file = "";
+my $random = 0;
+my $loop = 0;
+my $i = 0;
 
 while (<>) {
 	if (/^!/) {
@@ -19,13 +25,22 @@ while (<>) {
 
 	elsif  (/^>(.*?)\s*$/) {
 		$file = $1;
-		push(@songs, $folder."/".$file);
+		push(@list, $folder."/".$file);
 	}
 }
 
-for (my $i = 0 ; $i < scalar(@songs) ; $i++) {
+my $n = @list;
+
+foreach $i (0 .. $n - 1)  {
+	my $randI = int (rand ($n - $i));
+	push(@songs, $list[$randI]);
+	$list[$randI] = $list[0];
+	shift @list;
+}
+
+foreach $i (0 .. $n - 1) {
 	if (-e $songs[$i]) {
-		exec("afplay", $songs[$i]);
+		system("afplay", $songs[$i]);
 	}
 	else {
 		print STDERR "file not found : $songs[$i]\n";

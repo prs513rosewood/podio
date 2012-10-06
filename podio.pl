@@ -7,7 +7,6 @@ my $folder = "";
 my $file = "";
 my $random = 0;
 my $loop = 0;
-my $i = 0;
 
 while (<>) {
 	if (/^!/) {
@@ -29,12 +28,15 @@ while (<>) {
 	}
 }
 
-@songs = shuffle (@songs);
-foreach $i (0 .. $#songs) {
-	if (-e $songs[$i]) {
-		system("afplay", $songs[$i]);
+@songs = shuffle (@songs) if ($random);
+
+do {
+	for (@songs) {
+		if (-e $_) {
+			system("afplay", $_);
+		}
+		else {
+			print STDERR "file not found : $_\n";
+		}
 	}
-	else {
-		print STDERR "file not found : $songs[$i]\n";
-	}
-}
+} while ($loop);
